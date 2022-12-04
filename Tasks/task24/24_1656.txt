@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово EAT так, чтобы оно грамматически соответствовало содержанию текста
+Then follows a 20 minute break and two single periods on History and French. Lunch lasts an hour. We spend about 10 minutes on ______ and then have 50 minutes for football.

@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово WRITE  так, чтобы оно грамматически соответствовало содержанию текста
+In 1947, Samuelson ______ “Foundations of Economic Analysis” in which he used the language of mathematics to explain the world of economics.

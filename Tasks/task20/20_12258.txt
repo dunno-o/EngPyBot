@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово LOOK так, чтобы оно грамматически соответствовало содержанию текста
+[3] The Alhambra is a palace and fortress in Granada. It was built between 1238 and 1358 at the end of Muslim rule in Spain. Despite the development that followed the Christian conquest, it still _____ like a medieval Moorish settlement.
