@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово REQUIRE так, чтобы оно грамматически соответствовало содержанию текста
+The profession of a doctor ___________ special education and long training.

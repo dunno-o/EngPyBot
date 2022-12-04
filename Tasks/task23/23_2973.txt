@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово ONE так, чтобы оно грамматически соответствовало содержанию текста
+Training was for three days. During the __________________ two days I watched videos about my job. During the last day of orientation, I had to be at the restaurant to see how things got done.

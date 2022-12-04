@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово GROW так, чтобы оно грамматически соответствовало содержанию текста
+Then he called all the young people in the kingdom together and said, «I’ll give each one of you a seed today. I want you to go home, plant it, water it and come back here one year from today with what you have grown from this one seed.» A boy named Ling also got a seed. He came home and told his mother that he ______ the best plant.

@@ -1,0 +1,2 @@
+Преобразуйте, если это необходимо, слово NAME так, чтобы оно грамматически соответствовало содержанию текста
+Who really discovered America? Everybody knows that Christopher Columbus discovered America. However, America ______ after Amerigo Vespucci who explored the eastern coast of South America.
