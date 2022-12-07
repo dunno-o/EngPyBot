@@ -3,7 +3,7 @@ import random
 from telebot import types
 import task_dict_path_script as ps
 
-TOKEN = "5533652270:AAFHW6d2ZjjqWneMxv7H9CgKtOltmptDrzw"
+TOKEN = ""
 bot = telebot.TeleBot(TOKEN)
 
 question_to_user = dict()
