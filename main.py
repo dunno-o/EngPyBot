@@ -4,13 +4,13 @@ from telebot import types
 import os
 import task_dict_path_script as ps
 
-TOKEN = "5533652270:AAFHW6d2ZjjqWneMxv7H9CgKtOltmptDrzw"
 bot = telebot.TeleBot(TOKEN)
 
 question_to_user = dict()
 query_from_user = dict()
 dict_of_paths = ps.dict_of_files([i for i in range(1,  29 + 1)] + [36], "Tasks/task")
 unique_id = ps.dict_of_unique_id([i for i in range(1,  29 + 1)] + [36], "Tasks/task")
+words = ps.get_list_of_words(os.path.join(os.getcwd(), 'words'))
 
 
 def answer_to_question(message):
@@ -225,6 +225,21 @@ def choose_task_type(message):
 
     bot.send_message(message.chat.id, "Which task would you like to solve?",
                      reply_markup=markup)
+
+
+
+@bot.message_handler(commands=["give_word"])
+def choose_task_type(message):
+    choice = random.choice(words)
+    path = os.path.join(os.path.join(os.getcwd(), 'words'), choice)
+    meaning = ''
+    with open(path + '/meaning', 'r') as f:
+        for line in f:
+            meaning += line
+    meaning = meaning.split('|')
+    bot.send_message(message.chat.id, choice + '\n' + '\n' + str(meaning[0]) + '\n' + str(meaning[1]))
+    audio = open(path + '/' + choice + '.mp3', 'rb')
+    bot.send_voice(message.chat.id, audio)
 
 
 @bot.callback_query_handler(func=lambda call: True)

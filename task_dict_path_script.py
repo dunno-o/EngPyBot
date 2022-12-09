@@ -1,5 +1,12 @@
 import os
 
+def get_list_of_words(path: str) -> list:
+    res = []
+    for smth in os.scandir(path):
+        if not smth.is_file():
+            res.append(smth.name)
+
+    return res
 
 def list_of_files_in_dir(path: str) -> list:
     res = list()
@@ -48,3 +55,4 @@ def rename_for(tasks: list, path: str):
     for i in tasks:
         rename(os.path.join(os.getcwd(), path + str(i))) #для переименовки файлов использовалось
 
+#print(get_list_of_words(os.path.join(os.getcwd(), 'words')))
