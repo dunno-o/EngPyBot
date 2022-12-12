@@ -43,7 +43,6 @@ def answer_to_question(message):
         bot.send_message(message.chat.id, 'WA, try again')
 
 
-
 def give_question(path: list) -> list:
     task_id = path[0].split('_')[-1].split('.')[0]
     path_to_audio = os.getcwd() + '/Audio/' + task_id + '.mp3'
@@ -121,7 +120,6 @@ def give_question3(path: list) -> list:
     return [question, answer, path_to_audio]
 
 
-
 def give_question10(path: list) -> list:
     f = open(path[0], 'r')
     question = ['']
@@ -137,6 +135,7 @@ def give_question10(path: list) -> list:
     f.close()
 
     return [question, answer]
+
 
 def give_question36(path: list) -> list:
     f = open(path[0], 'r')
@@ -243,8 +242,7 @@ def query_handler_back(call):
             if int(call.data[4::]) <= 2:
                 if int(call.data[4::]) == 1:
                     q_a = give_question1(random.choice(dict_of_paths[call.data]))
-
-                elif int(call.data[4::]) == 2:
+                else:
                     q_a = give_question(random.choice(dict_of_paths[call.data]))
 
                 audio = open(q_a[2], 'rb')

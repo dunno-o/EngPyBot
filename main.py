@@ -1,10 +1,8 @@
-import telebot
 import random
 from telebot import types
 import os
-import task_dict_path_script as ps
 from use import bot, query_handler_back, answer_to_question, give_task_by_id, \
-                question_to_user, query_from_user, dict_of_paths, unique_id, words
+                question_to_user, query_from_user, words
 
 
 @bot.message_handler(commands=['start'])
@@ -12,9 +10,15 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет, пиши /help')
 
 
-@bot.message_handler(commands=['help'])
-def help_message(message):
-    bot.send_message(message.chat.id, 'Чекай про меня тут ')
+@bot.message_handler(commands=["help"])
+def send_help_info(message):
+    help_info = '- Для выдачи задания тестовой части отправьте команду /give_task\n' \
+                '- Для выдачи конкретного задания отправьте команду /find_task, а затем на отправленное вам ' \
+                'сообщение ответьте id нужного задания (его можно посмотреть на сатйе РЕШУ ЕГЭ)\n' \
+                '- Для выдачи слова отправьте команду /give_word\n' \
+                'Подробнее читайте в README'
+
+    bot.send_message(message.chat.id, help_info)
 
 
 @bot.message_handler(commands=["give_task"])
@@ -61,7 +65,7 @@ def button_message(message):
 
 @bot.message_handler(content_types=["text"])
 def filter_of_answers(message):
-    if message.reply_to_message != None:
+    if message.reply_to_message is not None:
         if message.reply_to_message.id in question_to_user and \
                 question_to_user[message.reply_to_message.id][0] == message.chat.id:
             answer_to_question(message)
