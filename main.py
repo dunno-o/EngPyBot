@@ -12,13 +12,12 @@ def start_message(message):
 
 @bot.message_handler(commands=["help"])
 def send_help_info(message):
-    help_info = '- Для выдачи задания тестовой части отправьте команду /give_task\n' \
-                '- Для выдачи конкретного задания отправьте команду /find_task, а затем на отправленное вам ' \
-                'сообщение ответьте id нужного задания (его можно посмотреть на сатйе РЕШУ ЕГЭ)\n' \
-                '- Для выдачи слова отправьте команду /give_word\n' \
-                'Подробнее читайте в README'
+    help_info = '\- Для выдачи задания тестовой части отправьте команду \/give\_task \n' \
+                '\- Для выдачи конкретного задания отправьте команду \/find\_task, а затем на отправленное вам сообщение ответьте id нужного задания \(его можно посмотреть на сайте РЕШУ ЕГЭ\) \n' \
+                '\- Для выдачи слова отправьте команду \/give\_word \n' \
+                'Подробнее читайте в [README](https://github.com/dunno-o/EngPyBot)'
 
-    bot.send_message(message.chat.id, help_info)
+    bot.send_message(message.chat.id, help_info, parse_mode='MarkdownV2')
 
 
 @bot.message_handler(commands=["give_task"])
@@ -72,6 +71,8 @@ def filter_of_answers(message):
         if message.reply_to_message.id in query_from_user and \
                 query_from_user[message.reply_to_message.id] == message.chat.id:
             give_task_by_id(message)
+    else:
+        bot.send_message(message.chat.id, "Read /help")
 
 
 bot.polling(none_stop=True, interval=0)

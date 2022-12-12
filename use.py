@@ -19,6 +19,8 @@ def answer_to_question(message):
     if message.text.replace(' ', '').upper() == "ANSWER":
         bot.reply_to(message, '|'.join(question_to_user[message.reply_to_message.id][1]))
         question_to_user.pop(message.reply_to_message.id)
+    elif message.text.replace(' ', '').upper() == "ID":
+        bot.reply_to(message, question_to_user[message.reply_to_message.id][3])
     elif question_to_user[message.reply_to_message.id][2] != "task36" and message.text.replace(' ', '').upper() in \
             question_to_user[message.reply_to_message.id][1]:
         bot.send_message(message.chat.id, 'OK')
@@ -161,7 +163,7 @@ def give_task_by_id(message):
             bot.send_audio(message.chat.id, audio)
             sent_message = bot.send_message(message.chat.id, q_a[0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1],
-                                                 "task" + unique_id[int(message.text)][2]]
+                                                 "task" + unique_id[int(message.text)][2], int(message.text)]
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) == 2:
             q_a = give_question(unique_id[int(message.text)])
@@ -169,7 +171,7 @@ def give_task_by_id(message):
             bot.send_audio(message.chat.id, audio)
             sent_message = bot.send_message(message.chat.id, q_a[0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1],
-                                                 "task" + unique_id[int(message.text)][2]]
+                                                 "task" + unique_id[int(message.text)][2], int(message.text)]
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) <= 9:
             q_a = give_question3(unique_id[int(message.text)])
@@ -177,13 +179,13 @@ def give_task_by_id(message):
             bot.send_audio(message.chat.id, audio)
             sent_message = bot.send_message(message.chat.id, q_a[0][0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1][0],
-                                                 "task" + unique_id[int(message.text)][2]]
+                                                 "task" + unique_id[int(message.text)][2], int(message.text)]
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) == 10:
             q_a = give_question10(unique_id[int(message.text)])
 
             sent_message = bot.send_message(message.chat.id, q_a[0][0])
-            question_to_user[sent_message.id] = [message.chat.id, q_a[1], "task" + unique_id[int(message.text)][2]]
+            question_to_user[sent_message.id] = [message.chat.id, q_a[1], "task" + unique_id[int(message.text)][2], int(message.text)]
             for i in range(1, len(q_a[0])):
                 bot.send_message(message.chat.id, q_a[0][i])
 
@@ -196,7 +198,7 @@ def give_task_by_id(message):
                         q_a = give_question36(unique_id[int(message.text) - i])
                     sent_message = bot.send_message(message.chat.id, q_a[0])
                     question_to_user[sent_message.id] = [message.chat.id, q_a[1],
-                                                         "task" + unique_id[int(message.text) - i][2]]
+                                                         "task" + unique_id[int(message.text) - i][2], int(message.text)]
                     query_from_user.pop(message.reply_to_message.id)
                     break
     else:
@@ -241,40 +243,54 @@ def query_handler_back(call):
         elif "task" in call.data:
             if int(call.data[4::]) <= 2:
                 if int(call.data[4::]) == 1:
-                    q_a = give_question1(random.choice(dict_of_paths[call.data]))
+                    path = random.choice(dict_of_paths[call.data])
+                    task_id = path[0].split('_')[-1].split('.')[0]
+
+                    q_a = give_question1(path)
                 else:
-                    q_a = give_question(random.choice(dict_of_paths[call.data]))
+                    path = random.choice(dict_of_paths[call.data])
+                    task_id = path[0].split('_')[-1].split('.')[0]
+
+                    q_a = give_question(path)
 
                 audio = open(q_a[2], 'rb')
                 bot.send_voice(call.message.chat.id, audio)
-                sent_message = bot.send_message(call.message.chat.id, q_a[0])
-                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data]
+                sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
+                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
 
             elif int(call.data[4::]) == 3:
-                q_a = give_question3(random.choice(dict_of_paths[call.data]))
+                path = random.choice(dict_of_paths[call.data])
+                task_id = path[0].split('_')[-1].split('.')[0]
+                q_a = give_question3(path)
 
                 audio = open(q_a[2], 'rb')
                 bot.send_voice(call.message.chat.id, audio)
                 for i in range(7):
-                    sent_message = bot.send_message(call.message.chat.id, str(3 + i) + '. ' + q_a[0][i])
-                    question_to_user[sent_message.id] = [call.message.chat.id, q_a[1][i], call.data]
+                    sent_message = bot.send_message(call.message.chat.id, "Task id: " + str(int(task_id) + i) + '\n' + str(3 + i) + '. ' + q_a[0][i])
+                    question_to_user[sent_message.id] = [call.message.chat.id, q_a[1][i], call.data, int(task_id) + i]
 
             elif int(call.data[4::]) == 10:
-                q_a = give_question10(random.choice(dict_of_paths[call.data]))
+                path = random.choice(dict_of_paths[call.data])
+                task_id = path[0].split('_')[-1].split('.')[0]
+                q_a = give_question10(path)
 
-                sent_message = bot.send_message(call.message.chat.id, q_a[0][0])
-                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data]
+                sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0][0])
+                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
                 for i in range(1, len(q_a[0])):
                     bot.send_message(call.message.chat.id, q_a[0][i])
 
             elif int(call.data[4::]) == 36:
-                q_a = give_question36(random.choice(dict_of_paths[call.data]))
+                path = random.choice(dict_of_paths[call.data])
+                task_id = path[0].split('_')[-1].split('.')[0]
+                q_a = give_question36(path)
 
-                sent_message = bot.send_message(call.message.chat.id, q_a[0])
-                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data]
+                sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
+                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
 
             elif int(call.data[4::]) != 36:
-                q_a = give_question(random.choice(dict_of_paths[call.data]))
+                path = random.choice(dict_of_paths[call.data])
+                task_id = path[0].split('_')[-1].split('.')[0]
+                q_a = give_question(path)
 
-                sent_message = bot.send_message(call.message.chat.id, q_a[0])
-                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data]
+                sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
+                question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
