@@ -4,7 +4,7 @@ from telebot import types
 import os
 import task_dict_path_script as ps
 
-TOKEN = ""
+TOKEN = "5533652270:AAFHW6d2ZjjqWneMxv7H9CgKtOltmptDrzw"
 bot = telebot.TeleBot(TOKEN)
 
 
@@ -21,7 +21,7 @@ def answer_to_question(message):
         question_to_user.pop(message.reply_to_message.id)
     elif question_to_user[message.reply_to_message.id][2] != "task36" and message.text.replace(' ', '').upper() in \
             question_to_user[message.reply_to_message.id][1]:
-        bot.send_message(message.chat.id2, 'OK')
+        bot.send_message(message.chat.id, 'OK')
         question_to_user.pop(message.reply_to_message.id)
     elif question_to_user[message.reply_to_message.id][2] == "task36":
         wa = "wrong tasks: "
@@ -156,9 +156,6 @@ def give_question36(path: list) -> list:
 
 def give_task_by_id(message):
     if message.text.isnumeric():
-        print('isnumeric')
-        print(message.text)
-        print(message.text in unique_id)
         if int(message.text) in unique_id and int(unique_id[int(message.text)][2]) == 1:
             q_a = give_question1(unique_id[int(message.text)])
             audio = open(q_a[2], 'rb')

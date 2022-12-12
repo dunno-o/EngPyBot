@@ -1,5 +1,6 @@
 import os
 
+
 def get_list_of_words(path: str) -> list:
     res = []
     for smth in os.scandir(path):
@@ -7,6 +8,7 @@ def get_list_of_words(path: str) -> list:
             res.append(smth.name)
 
     return res
+
 
 def list_of_files_in_dir(path: str) -> list:
     res = list()
@@ -36,6 +38,7 @@ def find_unique_id(path: str, d: dict):
             file_ans = os.path.join(dir_path.replace('Tasks', 'TasksAnswers'), (file.split('.'))[0] + '_ans.txt')
             d[int(unique_id)] = [file_path, file_ans, task_n]
 
+
 def dict_of_unique_id(tasks: list, path: str) -> dict:
     res = dict()
     for i in tasks:
@@ -55,15 +58,10 @@ def rename_for(tasks: list, path: str):
     for i in tasks:
         rename(os.path.join(os.getcwd(), path + str(i))) #для переименовки файлов использовалось
 
-def delete_DS_Store(path: str) -> list:
+
+def delete_DS_Store(path: str):
     for dir_path, _, filenames in os.walk(path):
         for file in filenames:
             if file == ".DS_Store":
                 file_path = os.path.join(dir_path, file)
                 os.remove(file_path)
-
-
-
-delete_DS_Store(os.getcwd())
-
-#print(get_list_of_words(os.path.join(os.getcwd(), 'words')))

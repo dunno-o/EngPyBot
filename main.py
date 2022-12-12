@@ -3,8 +3,8 @@ import random
 from telebot import types
 import os
 import task_dict_path_script as ps
-from use import bot, query_handler_back, answer_to_question, give_task_by_id, question_to_user, query_from_user, dict_of_paths, unique_id, words
-
+from use import bot, query_handler_back, answer_to_question, give_task_by_id, \
+                question_to_user, query_from_user, dict_of_paths, unique_id, words
 
 
 @bot.message_handler(commands=['start'])
@@ -34,7 +34,6 @@ def choose_task_type(message):
                      reply_markup=markup)
 
 
-
 @bot.message_handler(commands=["give_word"])
 def choose_task_type(message):
     choice = random.choice(words)
@@ -58,7 +57,6 @@ def query_handler(call):
 def button_message(message):
     sent_message = bot.send_message(message.chat.id, "Write the required task id in reply message")
     query_from_user[sent_message.id] = message.chat.id
-    print('find_task')
 
 
 @bot.message_handler(content_types=["text"])
@@ -69,7 +67,6 @@ def filter_of_answers(message):
             answer_to_question(message)
         if message.reply_to_message.id in query_from_user and \
                 query_from_user[message.reply_to_message.id] == message.chat.id:
-            print('filter_of_answers')
             give_task_by_id(message)
 
 
