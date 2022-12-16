@@ -5,20 +5,21 @@ import sqlite3
 from use import bot, query_handler_back, answer_to_question, give_task_by_id, \
     question_to_user, query_from_user, words
 
-
-@bot.message_handler(commands=['start'])
-def start_message(message):
-    connect = sqlite3.connect('database.db', check_same_thread=False)
-    cursor = connect.cursor()
-    cursor.execute("""drop table if exists data;""")
-    connect.commit()
-    cursor.execute("""create table data(
+connect = sqlite3.connect('database.db', check_same_thread=False)
+cursor = connect.cursor()
+cursor.execute("""drop table if exists data;""")
+connect.commit()
+cursor.execute("""create table data(
         id integer primary key autoincrement,
         chat_id int DEFAULT 0,
         success_cnt text DEFAULT "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
         all_cnt text DEFAULT "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
         );""")
-    connect.commit()
+connect.commit()
+
+
+@bot.message_handler(commands=['start'])
+def start_message(message):
     cursor.execute('INSERT INTO data (chat_id) VALUES (?);', [message.chat.id])
     connect.commit()
 
