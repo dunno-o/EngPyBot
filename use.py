@@ -2,9 +2,10 @@ import telebot
 import random
 from telebot import types
 import os
+import sqlite3
 import task_dict_path_script as ps
+from token import TOKEN
 
-TOKEN = "5533652270:AAFr0oJg9VshytTqfYJfYf1GU0HAtW5bg9Q"
 bot = telebot.TeleBot(TOKEN)
 
 
@@ -15,6 +16,38 @@ unique_id = ps.dict_of_unique_id([i for i in range(1,  29 + 1)] + [36], "Tasks/t
 words = ps.get_list_of_words(os.path.join(os.getcwd(), 'words'))
 
 
+def update_success(message, task_num):
+    connect = sqlite3.connect('database.db', check_same_thread=False)
+    cursor = connect.cursor()
+    cursor.execute(f"select success_cnt from data where chat_id = {message.chat.id}")
+    all_tasks = list(cursor.fetchall()[0])[0]
+    all_tasks = all_tasks.split(' ')
+    all_tasks = [int(el) for el in all_tasks]
+    all_tasks[task_num] += 1
+    new_data = ''
+    for task in all_tasks:
+        new_data += str(task) + ' '
+    new_data = new_data[:-1]
+    cursor.execute(f'update data set success_cnt = "{new_data}"')
+    connect.commit()
+
+
+def update_all(message, task_num):
+    connect = sqlite3.connect('database.db', check_same_thread=False)
+    cursor = connect.cursor()
+    cursor.execute(f"select all_cnt from data where chat_id = {message.chat.id}")
+    all_tasks = list(cursor.fetchall()[0])[0]
+    all_tasks = all_tasks.split(' ')
+    all_tasks = [int(el) for el in all_tasks]
+    all_tasks[task_num] += 1
+    new_data = ''
+    for task in all_tasks:
+        new_data += str(task) + ' '
+    new_data = new_data[:-1]
+    cursor.execute(f'update data set all_cnt = "{new_data}"')
+    connect.commit()
+
+
 def answer_to_question(message):
     if message.text.replace(' ', '').upper() == "ANSWER":
         bot.reply_to(message, '|'.join(question_to_user[message.reply_to_message.id][1]))
@@ -23,6 +56,8 @@ def answer_to_question(message):
         bot.reply_to(message, question_to_user[message.reply_to_message.id][3])
     elif question_to_user[message.reply_to_message.id][2] != "task36" and message.text.replace(' ', '').upper() in \
             question_to_user[message.reply_to_message.id][1]:
+        task_num = int(question_to_user[message.reply_to_message.id][2].replace('task', ''))
+        update_success(message, task_num - 1)
         bot.send_message(message.chat.id, 'OK')
         question_to_user.pop(message.reply_to_message.id)
     elif question_to_user[message.reply_to_message.id][2] == "task36":
@@ -37,6 +72,7 @@ def answer_to_question(message):
             wa += str(30 + i) + " "
         ans = wa + "\n" + ok
         if c == 7:
+            update_success(message, 29)
             bot.send_message(message.chat.id, 'OK')
             question_to_user.pop(message.reply_to_message.id)
         else:

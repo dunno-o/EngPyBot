@@ -77,6 +77,26 @@ def button_message(message):
     query_from_user[sent_message.id] = message.chat.id
 
 
+@bot.message_handler(commands=["stats"])
+def button_message(message):
+    stats = 'Статистика по решённым задачам: \n'
+    connect = sqlite3.connect('database.db', check_same_thread=False)
+    cursor = connect.cursor()
+    cursor.execute(f"select success_cnt from data where chat_id = {message.chat.id}")
+    success_tasks = list(cursor.fetchall()[0])[0]
+    success_tasks = success_tasks.split(' ')
+    cursor.execute(f"select all_cnt from data where chat_id = {message.chat.id}")
+    all_tasks = list(cursor.fetchall()[0])[0]
+    all_tasks = all_tasks.split(' ')
+    for i in range(0, 29):
+        try:
+            stats += f'{str(i)}: {success_tasks[i]}/{all_tasks[i]} ({round(int(success_tasks[i]) / int(all_tasks[i]), 2) * 100}%)\n'
+        except ZeroDivisionError:
+            stats += f'{str(i)}: {success_tasks[i]}/{all_tasks[i]} (0%)\n'
+    stats += f'30-36: {success_tasks[-1]}/{all_tasks[-1]}'
+    bot.send_message(message.chat.id, stats)
+
+
 @bot.message_handler(content_types=["text"])
 def filter_of_answers(message):
     if message.reply_to_message is not None:
