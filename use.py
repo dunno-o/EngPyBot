@@ -47,6 +47,14 @@ def update_all(message, task_num):
     connect.commit()
 
 
+def update_words_num(message):
+    connect = sqlite3.connect('database.db', check_same_thread=False)
+    cursor = connect.cursor()
+    cursor.execute(f"select words_cnt from data where chat_id = {message.chat.id}")
+    cursor.execute(f'update data set words_cnt = "{cursor.fetchall()[0][0] + 1}" where chat_id = {message.chat.id}')
+    connect.commit()
+
+
 def answer_to_question(message):
     if message.text.replace(' ', '').upper() == "ANSWER":
         bot.reply_to(message, '|'.join(question_to_user[message.reply_to_message.id][1]))

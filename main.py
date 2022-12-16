@@ -3,7 +3,7 @@ from telebot import types
 import os
 import sqlite3
 from use import bot, query_handler_back, answer_to_question, give_task_by_id, \
-    question_to_user, query_from_user, words
+    question_to_user, query_from_user, words, update_words_num
 
 connect = sqlite3.connect('database.db', check_same_thread=False)
 cursor = connect.cursor()
@@ -13,7 +13,8 @@ cursor.execute("""create table data(
         id integer primary key autoincrement,
         chat_id int DEFAULT 0,
         success_cnt text DEFAULT "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
-        all_cnt text DEFAULT "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+        all_cnt text DEFAULT "0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0",
+        words_cnt int DEFAULT 0
         );""")
 connect.commit()
 
@@ -66,6 +67,7 @@ def choose_task_type(message):
     bot.send_message(message.chat.id, choice + '\n' + '\n' + str(meaning[0]) + '\n' + str(meaning[1]))
     audio = open(path + '/' + choice + '.mp3', 'rb')
     bot.send_voice(message.chat.id, audio)
+    update_words_num(message)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -99,6 +101,8 @@ def button_message(message):
         stats += f'30-36: {success_tasks[-1]}/{all_tasks[-1]} ({round(int(success_tasks[-1]) / int(all_tasks[-1]), 2) * 100}%)\n'
     except ZeroDivisionError:
         stats += f'30-36: {success_tasks[-1]}/{all_tasks[-1]} (0%)\n'
+    cursor.execute(f"select words_cnt from data where chat_id = {message.chat.id}")
+    stats += f"learned words {str(cursor.fetchall()[0][0])}"
     bot.send_message(message.chat.id, stats)
 
 
