@@ -4,7 +4,7 @@ from telebot import types
 import os
 import task_dict_path_script as ps
 
-TOKEN = ""
+TOKEN = "5533652270:AAFr0oJg9VshytTqfYJfYf1GU0HAtW5bg9Q"
 bot = telebot.TeleBot(TOKEN)
 
 
