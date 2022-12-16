@@ -4,7 +4,6 @@ from telebot import types
 import os
 import sqlite3
 import task_dict_path_script as ps
-from utils import TOKEN
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -28,7 +27,7 @@ def update_success(message, task_num):
     for task in all_tasks:
         new_data += str(task) + ' '
     new_data = new_data[:-1]
-    cursor.execute(f'update data set success_cnt = "{new_data}"')
+    cursor.execute(f'update data set success_cnt = "{new_data}" where chat_id = {message.chat.id}')
     connect.commit()
 
 
@@ -44,7 +43,7 @@ def update_all(message, task_num):
     for task in all_tasks:
         new_data += str(task) + ' '
     new_data = new_data[:-1]
-    cursor.execute(f'update data set all_cnt = "{new_data}"')
+    cursor.execute(f'update data set all_cnt = "{new_data}" where chat_id = {message.chat.id}')
     connect.commit()
 
 
@@ -56,7 +55,7 @@ def answer_to_question(message):
         bot.reply_to(message, question_to_user[message.reply_to_message.id][3])
     elif question_to_user[message.reply_to_message.id][2] != "task36" and message.text.replace(' ', '').upper() in \
             question_to_user[message.reply_to_message.id][1]:
-        task_num = int(question_to_user[message.reply_to_message.id][2].replace('task', ''))
+        task_num = min(int(question_to_user[message.reply_to_message.id][2].replace('task', '')), 30)
         update_success(message, task_num - 1)
         bot.send_message(message.chat.id, 'OK')
         question_to_user.pop(message.reply_to_message.id)
@@ -200,6 +199,7 @@ def give_task_by_id(message):
             sent_message = bot.send_message(message.chat.id, q_a[0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1],
                                                  "task" + unique_id[int(message.text)][2], int(message.text)]
+            update_all(message, min(int(unique_id[int(message.text)][2]), 30) - 1)
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) == 2:
             q_a = give_question(unique_id[int(message.text)])
@@ -208,6 +208,7 @@ def give_task_by_id(message):
             sent_message = bot.send_message(message.chat.id, q_a[0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1],
                                                  "task" + unique_id[int(message.text)][2], int(message.text)]
+            update_all(message, min(int(unique_id[int(message.text)][2]), 30) - 1)
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) <= 9:
             q_a = give_question3(unique_id[int(message.text)])
@@ -216,12 +217,14 @@ def give_task_by_id(message):
             sent_message = bot.send_message(message.chat.id, q_a[0][0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1][0],
                                                  "task" + unique_id[int(message.text)][2], int(message.text)]
+            update_all(message, min(int(unique_id[int(message.text)][2]), 30) - 1)
 
         elif int(message.text) in unique_id and int(unique_id[int(message.text)][2]) == 10:
             q_a = give_question10(unique_id[int(message.text)])
 
             sent_message = bot.send_message(message.chat.id, q_a[0][0])
             question_to_user[sent_message.id] = [message.chat.id, q_a[1], "task" + unique_id[int(message.text)][2], int(message.text)]
+            update_all(message, min(int(unique_id[int(message.text)][2]), 30) - 1)
             for i in range(1, len(q_a[0])):
                 bot.send_message(message.chat.id, q_a[0][i])
 
@@ -235,6 +238,7 @@ def give_task_by_id(message):
                     sent_message = bot.send_message(message.chat.id, q_a[0])
                     question_to_user[sent_message.id] = [message.chat.id, q_a[1],
                                                          "task" + unique_id[int(message.text) - i][2], int(message.text)]
+                    update_all(message, min(int(unique_id[int(message.text)][2]), 30) - 1)
                     query_from_user.pop(message.reply_to_message.id)
                     break
     else:
@@ -293,6 +297,7 @@ def query_handler_back(call):
                 bot.send_voice(call.message.chat.id, audio)
                 sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
                 question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
+                update_all(call.message, min(int(call.data.replace('task', '')), 30) - 1)
 
             elif int(call.data[4::]) == 3:
                 path = random.choice(dict_of_paths[call.data])
@@ -304,6 +309,7 @@ def query_handler_back(call):
                 for i in range(7):
                     sent_message = bot.send_message(call.message.chat.id, "Task id: " + str(int(task_id) + i) + '\n' + str(3 + i) + '. ' + q_a[0][i])
                     question_to_user[sent_message.id] = [call.message.chat.id, q_a[1][i], call.data, int(task_id) + i]
+                update_all(call.message, min(int(call.data.replace('task', '')), 30) - 1)
 
             elif int(call.data[4::]) == 10:
                 path = random.choice(dict_of_paths[call.data])
@@ -314,6 +320,7 @@ def query_handler_back(call):
                 question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
                 for i in range(1, len(q_a[0])):
                     bot.send_message(call.message.chat.id, q_a[0][i])
+                update_all(call.message, min(int(call.data.replace('task', '')), 30) - 1)
 
             elif int(call.data[4::]) == 36:
                 path = random.choice(dict_of_paths[call.data])
@@ -322,6 +329,7 @@ def query_handler_back(call):
 
                 sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
                 question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
+                update_all(call.message, min(int(call.data.replace('task', '')), 30) - 1)
 
             elif int(call.data[4::]) != 36:
                 path = random.choice(dict_of_paths[call.data])
@@ -330,3 +338,4 @@ def query_handler_back(call):
 
                 sent_message = bot.send_message(call.message.chat.id, "Task id: " + task_id + '\n' + q_a[0])
                 question_to_user[sent_message.id] = [call.message.chat.id, q_a[1], call.data, int(task_id)]
+                update_all(call.message, min(int(call.data.replace('task', '')), 30) - 1)

@@ -31,6 +31,7 @@ def send_help_info(message):
     help_info = '\- Для выдачи задания тестовой части отправьте команду \/give\_task \n' \
                 '\- Для выдачи конкретного задания отправьте команду \/find\_task, а затем на отправленное вам сообщение ответьте id нужного задания \(его можно посмотреть на сайте РЕШУ ЕГЭ\) \n' \
                 '\- Для выдачи слова отправьте команду \/give\_word \n' \
+                '\- Для просмотра статистики отправьте команду \/stats \n' \
                 'Подробнее читайте в [README](https://github.com/dunno-o/EngPyBot)'
 
     bot.send_message(message.chat.id, help_info, parse_mode='MarkdownV2')
