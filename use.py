@@ -4,7 +4,7 @@ from telebot import types
 import os
 import sqlite3
 import task_dict_path_script as ps
-from token import TOKEN
+from utils import TOKEN
 
 bot = telebot.TeleBot(TOKEN)
 

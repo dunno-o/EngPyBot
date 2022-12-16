@@ -93,7 +93,10 @@ def button_message(message):
             stats += f'{str(i)}: {success_tasks[i]}/{all_tasks[i]} ({round(int(success_tasks[i]) / int(all_tasks[i]), 2) * 100}%)\n'
         except ZeroDivisionError:
             stats += f'{str(i)}: {success_tasks[i]}/{all_tasks[i]} (0%)\n'
-    stats += f'30-36: {success_tasks[-1]}/{all_tasks[-1]}'
+    try:
+        stats += f'30-36: {success_tasks[i]}/{all_tasks[i]} ({round(int(success_tasks[i]) / int(all_tasks[i]), 2) * 100}%)\n'
+    except ZeroDivisionError:
+        stats += f'30-36: {success_tasks[i]}/{all_tasks[i]} (0%)\n'
     bot.send_message(message.chat.id, stats)
 
 
